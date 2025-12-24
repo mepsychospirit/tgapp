@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TechShop — С рейтингом</title>
+  <title>TechShop — Умный магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -50,7 +50,6 @@
       padding: 16px;
     }
 
-    /* Шапка */
     .header {
       display: flex;
       justify-content: space-between;
@@ -69,7 +68,6 @@
       gap: 8px;
     }
 
-    /* Переключатель темы */
     .theme-switch {
       display: flex;
       align-items: center;
@@ -85,32 +83,17 @@
     }
 
     .switch input { opacity: 0; width: 0; height: 0; }
-
     .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc; transition: .4s; border-radius: 24px;
     }
-
     .slider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
+      position: absolute; content: ""; height: 20px; width: 20px;
+      left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;
     }
-
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(26px); }
 
-    /* Категории */
     .categories {
       display: flex;
       gap: 8px;
@@ -119,10 +102,7 @@
       padding-bottom: 8px;
       scrollbar-width: none;
     }
-
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
+    .categories::-webkit-scrollbar { display: none; }
 
     .category-btn {
       flex-shrink: 0;
@@ -134,14 +114,12 @@
       cursor: pointer;
       transition: var(--transition);
     }
-
     .category-btn:hover, .category-btn.active {
       background: var(--accent);
       color: white;
       border-color: var(--accent);
     }
 
-    /* Товары */
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -156,11 +134,7 @@
       transition: var(--transition);
       border: 1px solid var(--border);
     }
-
-    .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-    }
+    .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
 
     .product-img {
       width: 100%;
@@ -168,22 +142,17 @@
       object-fit: cover;
       transition: transform 0.5s ease;
     }
-
-    .product-card:hover .product-img {
-      transform: scale(1.05);
-    }
+    .product-card:hover .product-img { transform: scale(1.05); }
 
     .product-info {
       padding: 16px;
     }
-
     .product-info h3 {
       margin: 0 0 8px;
       font-size: 1.2rem;
       font-weight: 600;
     }
 
-    /* Рейтинг */
     .rating {
       display: flex;
       align-items: center;
@@ -191,21 +160,17 @@
       margin: 4px 0 10px;
       font-size: 0.9rem;
     }
-
     .stars {
       display: flex;
       gap: 1px;
     }
-
     .star {
       color: var(--star-off);
       transition: color 0.2s;
     }
-
     .star.on {
       color: var(--star-on);
     }
-
     .rating-count {
       color: var(--text-secondary);
     }
@@ -243,17 +208,11 @@
       cursor: pointer;
       transition: var(--transition);
     }
-
     .add-to-cart:hover {
       background: var(--accent-hover);
       transform: translateY(-2px);
     }
 
-    .add-to-cart i {
-      font-size: 1.1em;
-    }
-
-    /* Корзина */
     .cart {
       margin-top: 24px;
       background: var(--card-bg);
@@ -262,7 +221,6 @@
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
     }
-
     .cart h2 {
       margin: 0 0 16px;
       color: var(--accent);
@@ -271,7 +229,6 @@
       gap: 8px;
       font-size: 1.2rem;
     }
-
     .cart-item {
       display: flex;
       justify-content: space-between;
@@ -280,11 +237,7 @@
       border-bottom: 1px dashed var(--border);
       font-size: 0.95rem;
     }
-
-    .cart-item:last-child {
-      border-bottom: none;
-    }
-
+    .cart-item:last-child { border-bottom: none; }
     .cart-total {
       font-size: 1.1rem;
       font-weight: 700;
@@ -292,14 +245,12 @@
       margin-top: 16px;
       text-align: right;
     }
-
     .empty-cart {
       text-align: center;
       color: var(--text-secondary);
       font-style: italic;
       padding: 16px 0;
     }
-
     .checkout-btn {
       background: var(--accent);
       color: white;
@@ -334,7 +285,7 @@
     </div>
 
     <div class="products" id="products">
-      <!-- Товары будут здесь -->
+      <!-- Товары -->
     </div>
 
     <div class="cart">
@@ -345,10 +296,20 @@
         <button class="checkout-btn" onclick="checkout()" id="checkout-btn" disabled>Оформить заказ</button>
       </div>
     </div>
+
+    <div style="margin: 16px 0; text-align: center;">
+      <button onclick="showOrderHistory()" style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem;">
+        📦 История заказов
+      </button>
+    </div>
   </div>
 
   <script>
     const tg = window.Telegram?.WebApp;
+    if (!tg) {
+      document.body.innerHTML = "<h2>📱 Откройте в Telegram</h2><p>Этот магазин работает только как Mini App.</p>";
+      throw new Error("Not in Telegram");
+    }
     tg.expand();
 
     const themeBtn = document.getElementById('theme-toggle');
@@ -363,10 +324,18 @@
       tg.CloudStorage.setItem('darkTheme', themeBtn.checked ? '1' : '0');
     });
 
-    tg.CloudStorage.getItem('darkTheme', (err, value) => {
-      if (value === '1') {
+    tg.CloudStorage.getItem('darkTheme', (e, v) => {
+      if (v === '1') {
         document.body.classList.add('dark');
         themeBtn.checked = true;
+      }
+    });
+
+    tg.onEvent('themeChanged', () => {
+      if (tg.colorScheme === 'dark') {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.remove('dark');
       }
     });
 
@@ -374,99 +343,26 @@
     const categories = document.getElementById('categories');
     categories.addEventListener('click', e => {
       if (e.target.classList.contains('category-btn')) {
-        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
-        filterProducts(e.target.getAttribute('data-category'));
+        filterProducts(e.target.dataset.category);
       }
     });
 
-    // Товары с рейтингом
+    // Товары
     const products = [
-      {
-        id: 'laptop',
-        name: 'Ноутбук X200',
-        price: 99,
-        img: 'https://picsum.photos/seed/laptop/300/200',
-        desc: 'Мощный, лёгкий, для работы и игр',
-        category: 'laptops',
-        rating: 4.7,
-        reviews: 23
-      },
-      {
-        id: 'macbook',
-        name: 'MacBook Air M2',
-        price: 129,
-        img: 'https://picsum.photos/seed/macbook/300/200',
-        desc: 'Тонкий, быстрый, с отличным экраном',
-        category: 'laptops',
-        rating: 4.9,
-        reviews: 41
-      },
-      {
-        id: 'phone',
-        name: 'Смартфон Z10',
-        price: 59,
-        img: 'https://picsum.photos/seed/phone/300/200',
-        desc: '6.7", 128 ГБ, камера 108 МП',
-        category: 'phones',
-        rating: 4.3,
-        reviews: 18
-      },
-      {
-        id: 'iphone',
-        name: 'iPhone 15',
-        price: 149,
-        img: 'https://picsum.photos/seed/iphone/300/200',
-        desc: 'Новейший iPhone с премиум-камерой',
-        category: 'phones',
-        rating: 4.8,
-        reviews: 35
-      },
-      {
-        id: 'headphones',
-        name: 'Наушники ProX',
-        price: 12,
-        img: 'https://picsum.photos/seed/headphones/300/200',
-        desc: 'Шумоподавление, 30 ч работы',
-        category: 'audio',
-        rating: 4.5,
-        reviews: 29
-      },
-      {
-        id: 'earbuds',
-        name: 'AirBuds Pro',
-        price: 18,
-        img: 'https://picsum.photos/seed/airbuds/300/200',
-        desc: 'Беспроводные, с кейсом и зарядкой',
-        category: 'audio',
-        rating: 4.6,
-        reviews: 22
-      },
-      {
-        id: 'charger',
-        name: 'Зарядка 65W',
-        price: 8,
-        img: 'https://picsum.photos/seed/charger/300/200',
-        desc: 'Быстрая зарядка для всех устройств',
-        category: 'accessories',
-        rating: 4.4,
-        reviews: 14
-      },
-      {
-        id: 'case',
-        name: 'Чехол защитный',
-        price: 5,
-        img: 'https://picsum.photos/seed/case/300/200',
-        desc: 'Ударопрочный, с магнитом',
-        category: 'accessories',
-        rating: 4.1,
-        reviews: 9
-      }
+      { id: 'laptop', name: 'Ноутбук X200', price: 99, img: 'https://picsum.photos/seed/laptop/300/200', desc: 'Мощный, лёгкий, для работы и игр', category: 'laptops', rating: 4.7, reviews: 23 },
+      { id: 'macbook', name: 'MacBook Air M2', price: 129, img: 'https://picsum.photos/seed/macbook/300/200', desc: 'Тонкий, быстрый, с отличным экраном', category: 'laptops', rating: 4.9, reviews: 41 },
+      { id: 'phone', name: 'Смартфон Z10', price: 59, img: 'https://picsum.photos/seed/phone/300/200', desc: '6.7", 128 ГБ, камера 108 МП', category: 'phones', rating: 4.3, reviews: 18 },
+      { id: 'iphone', name: 'iPhone 15', price: 149, img: 'https://picsum.photos/seed/iphone/300/200', desc: 'Новейший iPhone с премиум-камерой', category: 'phones', rating: 4.8, reviews: 35 },
+      { id: 'headphones', name: 'Наушники ProX', price: 12, img: 'https://picsum.photos/seed/headphones/300/200', desc: 'Шумоподавление, 30 ч работы', category: 'audio', rating: 4.5, reviews: 29 },
+      { id: 'earbuds', name: 'AirBuds Pro', price: 18, img: 'https://picsum.photos/seed/airbuds/300/200', desc: 'Беспроводные, с кейсом и зарядкой', category: 'audio', rating: 4.6, reviews: 22 },
+      { id: 'charger', name: 'Зарядка 65W', price: 8, img: 'https://picsum.photos/seed/charger/300/200', desc: 'Быстрая зарядка для всех устройств', category: 'accessories', rating: 4.4, reviews: 14 },
+      { id: 'case', name: 'Чехол защитный', price: 5, img: 'https://picsum.photos/seed/case/300/200', desc: 'Ударопрочный, с магнитом', category: 'accessories', rating: 4.1, reviews: 9 }
     ];
 
     let cart = {};
 
-    // Генерация звёзд
     function renderStars(rating) {
       const stars = [];
       const full = Math.floor(rating);
@@ -482,12 +378,8 @@
     function renderProducts() {
       const container = document.getElementById('products');
       const activeCat = document.querySelector('.category-btn.active')?.dataset.category || 'all';
-
       container.innerHTML = '';
-      const filtered = activeCat === 'all'
-        ? products
-        : products.filter(p => p.category === activeCat);
-
+      const filtered = activeCat === 'all' ? products : products.filter(p => p.category === activeCat);
       filtered.forEach(prod => {
         const card = document.createElement('div');
         card.classList.add('product-card');
@@ -510,17 +402,11 @@
       });
     }
 
-    function filterProducts(cat) {
-      renderProducts();
-    }
-
     window.addToCart = function(id) {
       const prod = products.find(p => p.id === id);
       if (!prod) return;
-
       if (cart[id]) cart[id].qty += 1;
       else cart[id] = { ...prod, qty: 1 };
-
       updateCart();
       tg.HapticFeedback.impactOccurred("medium");
       tg.showPopup({ title: '✅ Готово', message: `${prod.name} добавлен в корзину!` });
@@ -531,7 +417,6 @@
       const cartEl = document.getElementById('cart-items');
       const totalEl = document.getElementById('total');
       const checkoutBtn = document.getElementById('checkout-btn');
-
       if (items.length === 0) {
         cartEl.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
         totalEl.textContent = '0';
@@ -544,66 +429,84 @@
           total += item.price * item.qty;
           const el = document.createElement('div');
           el.classList.add('cart-item');
-          el.innerHTML = `
-            <div>
-              <strong>${item.name}</strong> × ${item.qty}
-            </div>
-            <div>${item.price * item.qty} ⭐</div>
-          `;
+          el.innerHTML = `<div><strong>${item.name}</strong> × ${item.qty}</div><div>${item.price * item.qty} ⭐</div>`;
           cartEl.appendChild(el);
         });
         totalEl.textContent = total;
         checkoutBtn.disabled = false;
         MainButton.setText(`Оплатить ${total} ⭐`).show();
       }
-
       tg.CloudStorage.setItem('cart', JSON.stringify(cart));
     }
 
     function checkout() {
-      tg.showInputDialog({
-        title: "Оформление заказа",
-        message: "Введите ваше имя и адрес доставки:",
-        inputPlaceholder: "Иван Иванов, ул. Ленина, 15, кв. 3",
-        buttonText: "Подтвердить"
-      }, (value) => {
-        if (!value) return;
-
-        const total = Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
-        const order = {
-          action: 'order',
-          total,
-          cart,
-          user: tg.initDataUnsafe.user,
-          delivery: value
-        };
-
-        tg.sendData(JSON.stringify(order));
-        tg.showAlert('✅ Заказ оформлен! Мы свяжемся с вами.', () => {
+      tg.CloudStorage.getItem('lastDelivery', (e, saved) => {
+        tg.showInputDialog({
+          title: "Оформление заказа",
+          message: "Введите имя и адрес доставки:",
+          inputPlaceholder: "Иван Иванов, ул. Ленина, 15",
+          input: saved || "",
+          buttonText: "Оплатить"
+        }, (value) => {
+          if (!value) return;
+          tg.CloudStorage.setItem('lastDelivery', value);
+          const total = itemsTotal();
+          const order = { action: 'order', total, cart: Object.values(cart), user: tg.initDataUnsafe.user, delivery: value };
+          saveOrder(order);
+          sendOrderToBot(order);
           cart = {};
           updateCart();
-          MainButton.hide();
+          tg.showAlert('✅ Спасибо за заказ! Мы свяжемся с вами.');
         });
       });
     }
 
-    MainButton.onClick(() => {
-      const total = Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
-      tg.showConfirm(`Оплатить ${total} ⭐?`, (ok) => {
-        if (ok) checkout();
+    function itemsTotal() {
+      return Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
+    }
+
+    function saveOrder(order) {
+      tg.CloudStorage.getItem('orders', (e, data) => {
+        const orders = data ? JSON.parse(data) : [];
+        orders.push({ id: Date.now(), date: new Date().toLocaleString('ru-RU'), ...order });
+        tg.CloudStorage.setItem('orders', JSON.stringify(orders));
       });
-    });
+    }
+
+    function sendOrderToBot(order) {
+      const msg = `📦 Новый заказ!\n\n` +
+        `Пользователь: ${order.user.first_name} (ID: ${order.user.id})\n` +
+        `Товары: ${order.cart.map(i => `${i.name} × ${i.qty}`).join('\n  ')}\n` +
+        `Итого: ${order.total} ⭐\n` +
+        `Доставка: ${order.delivery}`;
+      tg.sendData(JSON.stringify({ action: 'new_order_notification', message: msg }));
+    }
+
+    function showOrderHistory() {
+      tg.CloudStorage.getItem('orders', (e, data) => {
+        const orders = data ? JSON.parse(data) : [];
+        if (orders.length === 0) {
+          tg.showAlert("📦 У вас пока нет заказов");
+          return;
+        }
+        let html = '<h3>Ваши заказы:</h3><hr>';
+        orders.forEach(o => {
+          const items = o.cart.map(i => `${i.name} × ${i.qty}`).join(', ');
+          html += `<p><b>${o.total} ⭐</b> — ${items}<br><small>${o.date}</small></p><hr>`;
+        });
+        tg.showPopup({ title: "📦 История заказов", message: html, buttons: [{ type: "close" }] });
+      });
+    }
+
+    MainButton.onClick(() => { checkout(); });
 
     tg.onEvent('settingsButtonClicked', () => {
-      tg.showConfirm("Открыть админку?", ok => ok && (window.location.href = "admin.html"));
+      tg.showConfirm("Открыть админку?", ok => { if (ok) window.location.href = "admin.html"; });
     });
 
     tg.ready();
     renderProducts();
-    tg.CloudStorage.getItem('cart', (err, value) => {
-      if (value) cart = JSON.parse(value);
-      updateCart();
-    });
+    tg.CloudStorage.getItem('cart', (e, v) => { if (v) cart = JSON.parse(v); updateCart(); });
   </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TechShop — С табами</title>
+  <title>TechShop — С поиском и скидками</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -51,6 +51,25 @@
       min-height: calc(100vh - 140px);
     }
 
+    /* Уведомление о скидке */
+    .sale-banner {
+      background: linear-gradient(90deg, #f97316, #fb923c);
+      color: white;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 0 0 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+
     /* Заголовок */
     .header {
       display: flex;
@@ -96,6 +115,27 @@
     }
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(26px); }
+
+    /* Поиск */
+    .search {
+      margin: 16px 0;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: var(--card-bg);
+      color: var(--text);
+      outline: none;
+    }
+
+    .search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(88, 80, 236, 0.2);
+    }
 
     /* Выпадающий каталог */
     .dropdown {
@@ -406,6 +446,11 @@
 </head>
 <body>
   <div class="container">
+    <!-- Уведомление о скидке -->
+    <div class="sale-banner">
+      🎉 До -30% на наушники! Только сегодня!
+    </div>
+
     <!-- Каталог -->
     <div id="catalog-content">
       <div class="header">
@@ -418,6 +463,11 @@
           </label>
           <i class="fas fa-sun"></i>
         </div>
+      </div>
+
+      <!-- Поиск -->
+      <div class="search">
+        <input type="text" id="search-input" placeholder="🔍 Искать товары... (например: iPhone)">
       </div>
 
       <!-- Выпадающий каталог -->
@@ -460,11 +510,9 @@
         <img src="https://ui-avatars.com/api/?name=Пользователь&background=5850ec&color=fff" alt="Аватар">
         <h3>Добро пожаловать!</h3>
         <p>Ваш ID: <span id="user-id"></span></p>
-
         <button onclick="showOrderHistory()">
           📦 История заказов
         </button>
-
         <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-secondary);">
           💡 Все данные хранятся в Telegram
         </p>
@@ -526,6 +574,7 @@
     // Переменные
     const dropdownBtn = document.getElementById('dropdown-btn');
     const dropdownMenu = document.getElementById('dropdown-menu');
+    const searchInput = document.getElementById('search-input');
     let currentCategory = 'all';
     let cart = {};
 
@@ -554,13 +603,31 @@
       return stars.join('');
     }
 
+    // Поиск
+    searchInput.addEventListener('input', () => {
+      renderProducts();
+    });
+
     // Фильтрация и отрисовка
     function renderProducts() {
+      const query = searchInput.value.toLowerCase();
       const container = document.getElementById('products');
       container.innerHTML = '';
-      const filtered = currentCategory === 'all'
-        ? products
-        : products.filter(p => p.category === currentCategory);
+
+      let filtered = products;
+
+      // По категории
+      if (currentCategory !== 'all') {
+        filtered = filtered.filter(p => p.category === currentCategory);
+      }
+
+      // По поиску
+      if (query) {
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(query) || 
+          p.desc.toLowerCase().includes(query)
+        );
+      }
 
       filtered.forEach(prod => {
         const card = document.createElement('div');
@@ -759,6 +826,15 @@
       tg.CloudStorage.getItem('cart', (e, v) => {
         if (v) cart = JSON.parse(v);
         updateCart();
+      });
+
+      // Показ уведомления о скидке однократно
+      tg.CloudStorage.getItem('saleShown', (err, value) => {
+        if (!value) {
+          tg.showAlert("🎉 Скидка до -30% на наушники! Только сегодня!", () => {
+            tg.CloudStorage.setItem('saleShown', '1');
+          });
+        }
       });
     });
   </script>

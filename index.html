@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #5850ec;
+      --primary-dark: #4a40d8;
+      --bg: #f8f9fa;
+      --card-bg: white;
+      --text: #111827;
+      --text-secondary: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 16px auto;
+      padding: 16px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--primary);
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 16px;
+    }
+
+    .product-info h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .product-price {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .add-to-cart {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .cart {
+      margin-top: 24px;
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .empty-cart {
+      text-align: center;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .cart-total {
+      font-weight: bold;
+      margin-top: 12px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🛒 TechShop</h1>
+      <p>Магазин в Telegram</p>
+    </div>
+
+    <div class="products" id="products">
+      <!-- Товары будут добавлены скриптом -->
+    </div>
+
+    <div class="cart">
+      <h2>Корзина</h2>
+      <div id="cart-items">Корзина пуста</div>
+      <div class="cart-total">Итого: <span id="total">0</span> ⭐</div>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    tg.expand(); // Разворачиваем на полный экран
+    tg.themeParams = { bg_color: '#f8f9fa' };
+
+    const MainButton = tg.MainButton.setText("Оплатить ⭐").hide();
+
+    // Товары
+    const products = [
+      { id: 'laptop', name: 'Ноутбук X200', price: 99, img: 'https://picsum.photos/seed/laptop/300/200' },
+      { id: 'phone', name: 'Смартфон Z10', price: 59, img: 'https://picsum.photos/seed/phone/300/200' },
+      { id: 'headphones', name: 'Наушники ProX', price: 12, img: 'https://picsum.photos/seed/headphones/300/200' },
+    ];
+
+    let cart = {};
+    const cartEl = document.getElementById('cart-items');
+    const totalEl = document.getElementById('total');
+
+    // Отображение товаров
+    const productsEl = document.getElementById('products');
+    products.forEach(prod => {
+      const div = document.createElement('div');
+      div.classList.add('product-card');
+      div.innerHTML = `
+        <img src="${prod.img}" alt="${prod.name}" class="product-img">
+        <div class="product-info">
+          <h3>${prod.name}</h3>
+          <div class="product-price">${prod.price} ⭐</div>
+          <button class="add-to-cart" onclick="addToCart('${prod.id}')">В корзину</button>
+        </div>
+      `;
+      productsEl.appendChild(div);
+    });
+
+    // Добавление в корзину
+    function addToCart(id) {
+      const prod = products.find(p => p.id === id);
+      if (!prod) return;
+
+      if (cart[id]) cart[id].qty += 1;
+      else cart[id] = { ...prod, qty: 1 };
+
+      updateCart();
+      tg.HapticFeedback.impactOccurred("medium");
+      tg.showPopup({ title: '✅ Успешно', message: `${prod.name} добавлен в корзину!` });
+    }
+
+    // Обновление корзины
+    function updateCart() {
+      const items = Object.values(cart);
+      if (items.length === 0) {
+        cartEl.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
+        MainButton.hide();
+      } else {
+        cartEl.innerHTML = '';
+        let total = 0;
+        items.forEach(item => {
+          total += item.price * item.qty;
+          const itemDiv = document.createElement('div');
+          itemDiv.classList.add('cart-item');
+          itemDiv.innerHTML = `
+            <div>${item.name} × ${item.qty}</div>
+            <div>${item.price * item.qty} ⭐</div>
+          `;
+          cartEl.appendChild(itemDiv);
+        });
+        totalEl.textContent = total;
+        MainButton.setText(`Оплатить ${total} ⭐`).show();
+      }
+
+      // Сохраняем корзину
+      tg.CloudStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Загрузка корзины из облака
+    tg.CloudStorage.getItem('cart', (err, value) => {
+      if (!err && value) {
+        cart = JSON.parse(value);
+        updateCart();
+      }
+    });
+
+    // Оплата
+    MainButton.onClick(() => {
+      const total = Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
+      tg.showConfirm(
+        `Оплатить ${total} ⭐?`,
+        (confirmed) => {
+          if (confirmed) {
+            tg.sendData(JSON.stringify({
+              action: 'purchase',
+              total: total,
+              cart: cart,
+              user: tg.initDataUnsafe.user
+            }));
+            tg.showAlert('✅ Покупка завершена! Спасибо за доверие.', () => {
+              cart = {};
+              updateCart();
+              MainButton.hide();
+            });
+          }
+        }
+      );
+    });
+
+    // Готово
+    tg.ready();
+  </script>
+</body>
+</html>

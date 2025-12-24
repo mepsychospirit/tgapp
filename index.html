@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TechShop — Умный магазин</title>
+  <title>TechShop — С рейтингом</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -19,6 +19,8 @@
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       --shadow-hover: 0 8px 25px -5px rgba(0,0,0,0.15);
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --star-on: #fbbf24;
+      --star-off: #d1d5db;
     }
 
     body.dark {
@@ -29,8 +31,7 @@
       --border: #333;
       --accent: #7c65fa;
       --accent-hover: #6a50f0;
-      --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-      --shadow-hover: 0 8px 25px -5px rgba(0,0,0,0.4);
+      --star-off: #4b5563;
     }
 
     body {
@@ -52,8 +53,8 @@
     /* Шапка */
     .header {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 24px;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--accent);
@@ -69,12 +70,6 @@
     }
 
     /* Переключатель темы */
-    .header-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
     .theme-switch {
       display: flex;
       align-items: center;
@@ -188,6 +183,33 @@
       font-weight: 600;
     }
 
+    /* Рейтинг */
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin: 4px 0 10px;
+      font-size: 0.9rem;
+    }
+
+    .stars {
+      display: flex;
+      gap: 1px;
+    }
+
+    .star {
+      color: var(--star-off);
+      transition: color 0.2s;
+    }
+
+    .star.on {
+      color: var(--star-on);
+    }
+
+    .rating-count {
+      color: var(--text-secondary);
+    }
+
     .product-desc {
       font-size: 0.9rem;
       color: var(--text-secondary);
@@ -263,17 +285,19 @@
       border-bottom: none;
     }
 
-    .cart-actions {
-      margin-top: 16px;
-      text-align: right;
-    }
-
     .cart-total {
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--accent);
-      margin-bottom: 12px;
+      margin-top: 16px;
       text-align: right;
+    }
+
+    .empty-cart {
+      text-align: center;
+      color: var(--text-secondary);
+      font-style: italic;
+      padding: 16px 0;
     }
 
     .checkout-btn {
@@ -285,28 +309,19 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
-    .empty-cart {
-      text-align: center;
-      color: var(--text-secondary);
-      font-style: italic;
-      padding: 16px 0;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="header">
       <h1><i class="fas fa-store"></i> TechShop</h1>
-      <div class="header-controls">
-        <div class="theme-switch">
-          <i class="fas fa-moon"></i>
-          <label class="switch">
-            <input type="checkbox" id="theme-toggle">
-            <span class="slider"></span>
-          </label>
-          <i class="fas fa-sun"></i>
-        </div>
+      <div class="theme-switch">
+        <i class="fas fa-moon"></i>
+        <label class="switch">
+          <input type="checkbox" id="theme-toggle">
+          <span class="slider"></span>
+        </label>
+        <i class="fas fa-sun"></i>
       </div>
     </header>
 
@@ -365,7 +380,7 @@
       }
     });
 
-    // Товары
+    // Товары с рейтингом
     const products = [
       {
         id: 'laptop',
@@ -373,7 +388,9 @@
         price: 99,
         img: 'https://picsum.photos/seed/laptop/300/200',
         desc: 'Мощный, лёгкий, для работы и игр',
-        category: 'laptops'
+        category: 'laptops',
+        rating: 4.7,
+        reviews: 23
       },
       {
         id: 'macbook',
@@ -381,7 +398,9 @@
         price: 129,
         img: 'https://picsum.photos/seed/macbook/300/200',
         desc: 'Тонкий, быстрый, с отличным экраном',
-        category: 'laptops'
+        category: 'laptops',
+        rating: 4.9,
+        reviews: 41
       },
       {
         id: 'phone',
@@ -389,7 +408,9 @@
         price: 59,
         img: 'https://picsum.photos/seed/phone/300/200',
         desc: '6.7", 128 ГБ, камера 108 МП',
-        category: 'phones'
+        category: 'phones',
+        rating: 4.3,
+        reviews: 18
       },
       {
         id: 'iphone',
@@ -397,7 +418,9 @@
         price: 149,
         img: 'https://picsum.photos/seed/iphone/300/200',
         desc: 'Новейший iPhone с премиум-камерой',
-        category: 'phones'
+        category: 'phones',
+        rating: 4.8,
+        reviews: 35
       },
       {
         id: 'headphones',
@@ -405,7 +428,9 @@
         price: 12,
         img: 'https://picsum.photos/seed/headphones/300/200',
         desc: 'Шумоподавление, 30 ч работы',
-        category: 'audio'
+        category: 'audio',
+        rating: 4.5,
+        reviews: 29
       },
       {
         id: 'earbuds',
@@ -413,7 +438,9 @@
         price: 18,
         img: 'https://picsum.photos/seed/airbuds/300/200',
         desc: 'Беспроводные, с кейсом и зарядкой',
-        category: 'audio'
+        category: 'audio',
+        rating: 4.6,
+        reviews: 22
       },
       {
         id: 'charger',
@@ -421,7 +448,9 @@
         price: 8,
         img: 'https://picsum.photos/seed/charger/300/200',
         desc: 'Быстрая зарядка для всех устройств',
-        category: 'accessories'
+        category: 'accessories',
+        rating: 4.4,
+        reviews: 14
       },
       {
         id: 'case',
@@ -429,11 +458,26 @@
         price: 5,
         img: 'https://picsum.photos/seed/case/300/200',
         desc: 'Ударопрочный, с магнитом',
-        category: 'accessories'
+        category: 'accessories',
+        rating: 4.1,
+        reviews: 9
       }
     ];
 
     let cart = {};
+
+    // Генерация звёзд
+    function renderStars(rating) {
+      const stars = [];
+      const full = Math.floor(rating);
+      const hasHalf = rating % 1 >= 0.5;
+      for (let i = 0; i < 5; i++) {
+        if (i < full) stars.push('<i class="fas fa-star star on"></i>');
+        else if (i === full && hasHalf) stars.push('<i class="fas fa-star-half-alt star on"></i>');
+        else stars.push('<i class="far fa-star star"></i>');
+      }
+      return stars.join('');
+    }
 
     function renderProducts() {
       const container = document.getElementById('products');
@@ -451,6 +495,10 @@
           <img src="${prod.img}" alt="${prod.name}" class="product-img">
           <div class="product-info">
             <h3>${prod.name}</h3>
+            <div class="rating">
+              <div class="stars">${renderStars(prod.rating)}</div>
+              <span class="rating-count">${prod.rating} (${prod.reviews})</span>
+            </div>
             <p class="product-desc">${prod.desc}</p>
             <div class="product-price">${prod.price} ⭐</div>
             <button class="add-to-cart" onclick="addToCart('${prod.id}')">
@@ -463,7 +511,6 @@
     }
 
     function filterProducts(cat) {
-      document.querySelector(`[data-category="${cat}"]`).classList.add('active');
       renderProducts();
     }
 

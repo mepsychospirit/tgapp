@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TechShop — С очисткой корзины</title>
+  <title>TechShop — С табами</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -48,8 +48,10 @@
       max-width: 800px;
       margin: 16px auto;
       padding: 16px;
+      min-height: calc(100vh - 140px);
     }
 
+    /* Заголовок */
     .header {
       display: flex;
       justify-content: space-between;
@@ -68,6 +70,7 @@
       gap: 8px;
     }
 
+    /* Переключатель темы */
     .theme-switch {
       display: flex;
       align-items: center;
@@ -116,10 +119,6 @@
       transition: all 0.2s;
     }
 
-    .dropdown-btn:hover {
-      border-color: var(--accent);
-    }
-
     .dropdown-menu {
       display: none;
       position: absolute;
@@ -139,15 +138,14 @@
       padding: 12px 16px;
       cursor: pointer;
       border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
-    }
-
-    .dropdown-item:hover {
-      background: rgba(96, 165, 250, 0.1);
     }
 
     .dropdown-item:last-child {
       border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(96, 165, 250, 0.1);
     }
 
     /* Товары */
@@ -259,7 +257,6 @@
 
     /* Корзина */
     .cart {
-      margin-top: 24px;
       background: var(--card-bg);
       padding: 16px;
       border-radius: 16px;
@@ -311,78 +308,184 @@
       margin-top: 12px;
     }
 
-    .checkout-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
+    .checkout-btn, .clear-cart-btn {
       padding: 10px 20px;
       font-size: 1rem;
       border-radius: 8px;
       cursor: pointer;
+      border: none;
+      width: 100%;
+    }
+
+    .checkout-btn {
+      background: var(--accent);
+      color: white;
     }
 
     .clear-cart-btn {
       background: #ef4444;
       color: white;
+    }
+
+    /* Профиль */
+    .profile {
+      text-align: center;
+      padding: 20px 16px;
+    }
+
+    .profile img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 16px 0;
+    }
+
+    .profile h3 {
+      margin: 0 0 8px;
+    }
+
+    .profile p {
+      color: var(--text-secondary);
+      margin: 8px 0;
+    }
+
+    .profile button {
+      background: var(--accent);
+      color: white;
       border: none;
-      padding: 10px 20px;
-      font-size: 0.9rem;
+      padding: 12px 24px;
       border-radius: 8px;
+      font-size: 0.9rem;
       cursor: pointer;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    /* Подвал (Табы) */
+    .tabs {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .tab.active {
+      color: var(--accent) !important;
+    }
+
+    .tab i {
+      font-size: 1.2em;
+    }
+
+    /* Скрытие контента */
+    #catalog-content, #cart-content, #profile-content {
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header class="header">
-      <h1><i class="fas fa-store"></i> TechShop</h1>
-      <div class="theme-switch">
-        <i class="fas fa-moon"></i>
-        <label class="switch">
-          <input type="checkbox" id="theme-toggle">
-          <span class="slider"></span>
-        </label>
-        <i class="fas fa-sun"></i>
+    <!-- Каталог -->
+    <div id="catalog-content">
+      <div class="header">
+        <h1><i class="fas fa-store"></i> TechShop</h1>
+        <div class="theme-switch">
+          <i class="fas fa-moon"></i>
+          <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+          </label>
+          <i class="fas fa-sun"></i>
+        </div>
       </div>
-    </header>
 
-    <!-- Выпадающий каталог -->
-    <div class="dropdown">
-      <button id="dropdown-btn" class="dropdown-btn">
-        <span>📌 Все категории</span>
-        <i class="fas fa-chevron-down"></i>
-      </button>
-      <div id="dropdown-menu" class="dropdown-menu">
-        <div class="dropdown-item" data-category="all">📌 Все категории</div>
-        <div class="dropdown-item" data-category="laptops">💻 Ноутбуки</div>
-        <div class="dropdown-item" data-category="phones">📱 Телефоны</div>
-        <div class="dropdown-item" data-category="audio">🎧 Наушники</div>
-        <div class="dropdown-item" data-category="accessories">🔌 Аксессуары</div>
+      <!-- Выпадающий каталог -->
+      <div class="dropdown">
+        <button id="dropdown-btn" class="dropdown-btn">
+          <span>📌 Все категории</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div id="dropdown-menu" class="dropdown-menu">
+          <div class="dropdown-item" data-category="all">📌 Все категории</div>
+          <div class="dropdown-item" data-category="laptops">💻 Ноутбуки</div>
+          <div class="dropdown-item" data-category="phones">📱 Телефоны</div>
+          <div class="dropdown-item" data-category="audio">🎧 Наушники</div>
+          <div class="dropdown-item" data-category="accessories">🔌 Аксессуары</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Товары -->
-    <div class="products" id="products">
-      <!-- Товары загрузятся здесь -->
+      <!-- Товары -->
+      <div class="products" id="products">
+        <!-- Товары загрузятся здесь -->
+      </div>
     </div>
 
     <!-- Корзина -->
-    <div class="cart">
-      <h2><i class="fas fa-shopping-cart"></i> Корзина</h2>
-      <div id="cart-items">Корзина пуста</div>
-      <div class="cart-total">Итого: <span id="total">0</span> ⭐</div>
-      <div class="cart-actions">
-        <button class="checkout-btn" onclick="checkout()" id="checkout-btn" disabled>Оформить заказ</button>
-        <button class="clear-cart-btn" onclick="clearCart()">🗑️ Очистить корзину</button>
+    <div id="cart-content">
+      <div class="cart">
+        <h2><i class="fas fa-shopping-cart"></i> Ваша корзина</h2>
+        <div id="cart-items">Корзина пуста</div>
+        <div class="cart-total">Итого: <span id="total">0</span> ⭐</div>
+        <div class="cart-actions">
+          <button class="checkout-btn" onclick="checkout()" id="checkout-btn" disabled>Оформить заказ</button>
+          <button class="clear-cart-btn" onclick="clearCart()">🗑️ Очистить корзину</button>
+        </div>
       </div>
     </div>
 
-    <!-- История заказов -->
-    <div style="margin: 16px 0; text-align: center;">
-      <button onclick="showOrderHistory()" style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem;">
-        📦 История заказов
-      </button>
+    <!-- Профиль -->
+    <div id="profile-content">
+      <div class="profile">
+        <img src="https://ui-avatars.com/api/?name=Пользователь&background=5850ec&color=fff" alt="Аватар">
+        <h3>Добро пожаловать!</h3>
+        <p>Ваш ID: <span id="user-id"></span></p>
+
+        <button onclick="showOrderHistory()">
+          📦 История заказов
+        </button>
+
+        <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-secondary);">
+          💡 Все данные хранятся в Telegram
+        </p>
+      </div>
     </div>
+  </div>
+
+  <!-- Подвал -->
+  <div class="tabs">
+    <button class="tab active" data-tab="catalog">
+      <i class="fas fa-th"></i>
+      <span>Каталог</span>
+    </button>
+    <button class="tab" data-tab="cart">
+      <i class="fas fa-shopping-cart"></i>
+      <span>Корзина</span>
+    </button>
+    <button class="tab" data-tab="profile">
+      <i class="fas fa-user"></i>
+      <span>Профиль</span>
+    </button>
   </div>
 
   <script>
@@ -420,37 +523,11 @@
       }
     });
 
-    // Выпадающий каталог
+    // Переменные
     const dropdownBtn = document.getElementById('dropdown-btn');
     const dropdownMenu = document.getElementById('dropdown-menu');
-    const dropdownItems = document.querySelectorAll('.dropdown-item');
-
-    dropdownBtn.addEventListener('click', () => {
-      const isOpen = dropdownMenu.style.display === 'block';
-      document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
-      dropdownMenu.style.display = isOpen ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-        dropdownMenu.style.display = 'none';
-      }
-    });
-
     let currentCategory = 'all';
-
-    dropdownItems.forEach(item => {
-      item.addEventListener('click', () => {
-        currentCategory = item.dataset.category;
-        dropdownBtn.innerHTML = item.innerHTML;
-        dropdownMenu.style.display = 'none';
-        renderProducts();
-      });
-    });
-
-    document.addEventListener('scroll', () => {
-      dropdownMenu.style.display = 'none';
-    });
+    let cart = {};
 
     // Товары
     const products = [
@@ -463,8 +540,6 @@
       { id: 'charger', name: 'Зарядка 65W', price: 8, img: 'https://picsum.photos/seed/charger/300/200', desc: 'Быстрая зарядка для всех устройств', category: 'accessories', rating: 4.4, reviews: 14 },
       { id: 'case', name: 'Чехол защитный', price: 5, img: 'https://picsum.photos/seed/case/300/200', desc: 'Ударопрочный, с магнитом', category: 'accessories', rating: 4.1, reviews: 9 }
     ];
-
-    let cart = {};
 
     // Рейтинг
     function renderStars(rating) {
@@ -509,6 +584,7 @@
       });
     }
 
+    // Добавление в корзину
     window.addToCart = function(id) {
       const prod = products.find(p => p.id === id);
       if (!prod) return;
@@ -519,6 +595,7 @@
       tg.showPopup({ title: '✅ Готово', message: `${prod.name} добавлен в корзину!` });
     };
 
+    // Обновить корзину
     function updateCart() {
       const items = Object.values(cart);
       const cartEl = document.getElementById('cart-items');
@@ -547,6 +624,7 @@
       tg.CloudStorage.setItem('cart', JSON.stringify(cart));
     }
 
+    // Очистить корзину
     function clearCart() {
       tg.showConfirm("Вы уверены, что хотите очистить корзину?", (ok) => {
         if (ok) {
@@ -557,6 +635,7 @@
       });
     }
 
+    // Оформить заказ
     function checkout() {
       tg.CloudStorage.getItem('lastDelivery', (e, saved) => {
         tg.showInputDialog({
@@ -579,6 +658,7 @@
       });
     }
 
+    // Сохранить заказ
     function saveOrder(order) {
       tg.CloudStorage.getItem('orders', (e, data) => {
         const orders = data ? JSON.parse(data) : [];
@@ -587,6 +667,7 @@
       });
     }
 
+    // Отправить в бот
     function sendOrderToBot(order) {
       const msg = `📦 Новый заказ!\n\n` +
         `Пользователь: ${order.user.first_name} (ID: ${order.user.id})\n` +
@@ -596,6 +677,7 @@
       tg.sendData(JSON.stringify({ action: 'new_order_notification', message: msg }));
     }
 
+    // История заказов
     function showOrderHistory() {
       tg.CloudStorage.getItem('orders', (e, data) => {
         const orders = data ? JSON.parse(data) : [];
@@ -612,15 +694,73 @@
       });
     }
 
+    // Управление вкладками
+    const tabs = document.querySelectorAll('.tab');
+    const catalogContent = document.getElementById('catalog-content');
+    const cartContent = document.getElementById('cart-content');
+    const profileContent = document.getElementById('profile-content');
+
+    function showTab(tabName) {
+      catalogContent.style.display = 'none';
+      cartContent.style.display = 'none';
+      profileContent.style.display = 'none';
+      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+
+      if (tabName === 'catalog') catalogContent.style.display = 'block';
+      else if (tabName === 'cart') cartContent.style.display = 'block';
+      else if (tabName === 'profile') {
+        profileContent.style.display = 'block';
+        document.getElementById('user-id').textContent = tg.initDataUnsafe.user?.id || '---';
+      }
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        showTab(tabName);
+      });
+    });
+
+    // Выпадающий каталог
+    dropdownBtn.addEventListener('click', () => {
+      const isOpen = dropdownMenu.style.display === 'block';
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+      dropdownMenu.style.display = isOpen ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.style.display = 'none';
+      }
+    });
+
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', () => {
+        currentCategory = item.dataset.category;
+        dropdownBtn.innerHTML = item.innerHTML;
+        dropdownMenu.style.display = 'none';
+        renderProducts();
+      });
+    });
+
+    // Главная кнопка
     MainButton.onClick(() => { checkout(); });
 
+    // Настройки
     tg.onEvent('settingsButtonClicked', () => {
       tg.showConfirm("Открыть админку?", ok => ok && (window.location.href = "admin.html"));
     });
 
-    tg.ready();
-    renderProducts();
-    tg.CloudStorage.getItem('cart', (e, v) => { if (v) cart = JSON.parse(v); updateCart(); });
+    // Инициализация
+    tg.ready(() => {
+      showTab('catalog');
+      renderProducts();
+      tg.CloudStorage.getItem('cart', (e, v) => {
+        if (v) cart = JSON.parse(v);
+        updateCart();
+      });
+    });
   </script>
 </body>
 </html>

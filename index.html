@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TechShop — Умный магазин</title>
+  <title>TechShop — С каталогом</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -94,32 +94,63 @@
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(26px); }
 
-    .categories {
-      display: flex;
-      gap: 8px;
+    /* Выпадающий каталог */
+    .dropdown {
       margin: 16px 0;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-width: none;
+      position: relative;
     }
-    .categories::-webkit-scrollbar { display: none; }
 
-    .category-btn {
-      flex-shrink: 0;
+    .dropdown-btn {
+      width: 100%;
+      padding: 12px;
       background: var(--card-bg);
       border: 1px solid var(--border);
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-size: 0.9rem;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 1rem;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.2s;
     }
-    .category-btn:hover, .category-btn.active {
-      background: var(--accent);
-      color: white;
+
+    .dropdown-btn:hover {
       border-color: var(--accent);
     }
 
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      box-shadow: var(--shadow);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(96, 165, 250, 0.1);
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Товары */
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -134,7 +165,11 @@
       transition: var(--transition);
       border: 1px solid var(--border);
     }
-    .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
 
     .product-img {
       width: 100%;
@@ -142,11 +177,15 @@
       object-fit: cover;
       transition: transform 0.5s ease;
     }
-    .product-card:hover .product-img { transform: scale(1.05); }
+
+    .product-card:hover .product-img {
+      transform: scale(1.05);
+    }
 
     .product-info {
       padding: 16px;
     }
+
     .product-info h3 {
       margin: 0 0 8px;
       font-size: 1.2rem;
@@ -160,17 +199,21 @@
       margin: 4px 0 10px;
       font-size: 0.9rem;
     }
+
     .stars {
       display: flex;
       gap: 1px;
     }
+
     .star {
       color: var(--star-off);
       transition: color 0.2s;
     }
+
     .star.on {
       color: var(--star-on);
     }
+
     .rating-count {
       color: var(--text-secondary);
     }
@@ -208,11 +251,13 @@
       cursor: pointer;
       transition: var(--transition);
     }
+
     .add-to-cart:hover {
       background: var(--accent-hover);
       transform: translateY(-2px);
     }
 
+    /* Корзина */
     .cart {
       margin-top: 24px;
       background: var(--card-bg);
@@ -221,6 +266,7 @@
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
     }
+
     .cart h2 {
       margin: 0 0 16px;
       color: var(--accent);
@@ -229,6 +275,7 @@
       gap: 8px;
       font-size: 1.2rem;
     }
+
     .cart-item {
       display: flex;
       justify-content: space-between;
@@ -237,7 +284,11 @@
       border-bottom: 1px dashed var(--border);
       font-size: 0.95rem;
     }
-    .cart-item:last-child { border-bottom: none; }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
     .cart-total {
       font-size: 1.1rem;
       font-weight: 700;
@@ -245,12 +296,14 @@
       margin-top: 16px;
       text-align: right;
     }
+
     .empty-cart {
       text-align: center;
       color: var(--text-secondary);
       font-style: italic;
       padding: 16px 0;
     }
+
     .checkout-btn {
       background: var(--accent);
       color: white;
@@ -276,18 +329,27 @@
       </div>
     </header>
 
-    <div class="categories" id="categories">
-      <div class="category-btn active" data-category="all">Все</div>
-      <div class="category-btn" data-category="laptops">Ноутбуки</div>
-      <div class="category-btn" data-category="phones">Телефоны</div>
-      <div class="category-btn" data-category="audio">Наушники</div>
-      <div class="category-btn" data-category="accessories">Аксессуары</div>
+    <!-- Выпадающий каталог -->
+    <div class="dropdown">
+      <button id="dropdown-btn" class="dropdown-btn">
+        <span>📌 Все категории</span>
+        <i class="fas fa-chevron-down"></i>
+      </button>
+      <div id="dropdown-menu" class="dropdown-menu">
+        <div class="dropdown-item" data-category="all">📌 Все категории</div>
+        <div class="dropdown-item" data-category="laptops">💻 Ноутбуки</div>
+        <div class="dropdown-item" data-category="phones">📱 Телефоны</div>
+        <div class="dropdown-item" data-category="audio">🎧 Наушники</div>
+        <div class="dropdown-item" data-category="accessories">🔌 Аксессуары</div>
+      </div>
     </div>
 
+    <!-- Товары -->
     <div class="products" id="products">
-      <!-- Товары -->
+      <!-- Товары загрузятся здесь -->
     </div>
 
+    <!-- Корзина -->
     <div class="cart">
       <h2><i class="fas fa-shopping-cart"></i> Корзина</h2>
       <div id="cart-items">Корзина пуста</div>
@@ -297,6 +359,7 @@
       </div>
     </div>
 
+    <!-- История заказов -->
     <div style="margin: 16px 0; text-align: center;">
       <button onclick="showOrderHistory()" style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem;">
         📦 История заказов
@@ -313,7 +376,7 @@
     tg.expand();
 
     const themeBtn = document.getElementById('theme-toggle');
-    const MainButton = tg.MainButton.setText("Оплатить ⭐").hide();
+    const MainButton = tg.MainApp?.MainButton || tg.MainButton.setText("Оплатить ⭐").hide();
 
     // Тема
     if (tg.colorScheme === 'dark') document.body.classList.add('dark');
@@ -339,14 +402,36 @@
       }
     });
 
-    // Категории
-    const categories = document.getElementById('categories');
-    categories.addEventListener('click', e => {
-      if (e.target.classList.contains('category-btn')) {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        filterProducts(e.target.dataset.category);
+    // Выпадающий каталог
+    const dropdownBtn = document.getElementById('dropdown-btn');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+    dropdownBtn.addEventListener('click', () => {
+      const isOpen = dropdownMenu.style.display === 'block';
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+      dropdownMenu.style.display = isOpen ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.style.display = 'none';
       }
+    });
+
+    let currentCategory = 'all';
+
+    dropdownItems.forEach(item => {
+      item.addEventListener('click', () => {
+        currentCategory = item.dataset.category;
+        dropdownBtn.innerHTML = item.innerHTML;
+        dropdownMenu.style.display = 'none';
+        renderProducts();
+      });
+    });
+
+    document.addEventListener('scroll', () => {
+      dropdownMenu.style.display = 'none';
     });
 
     // Товары
@@ -363,6 +448,7 @@
 
     let cart = {};
 
+    // Рейтинг
     function renderStars(rating) {
       const stars = [];
       const full = Math.floor(rating);
@@ -375,11 +461,14 @@
       return stars.join('');
     }
 
+    // Фильтрация и отрисовка
     function renderProducts() {
       const container = document.getElementById('products');
-      const activeCat = document.querySelector('.category-btn.active')?.dataset.category || 'all';
       container.innerHTML = '';
-      const filtered = activeCat === 'all' ? products : products.filter(p => p.category === activeCat);
+      const filtered = currentCategory === 'all'
+        ? products
+        : products.filter(p => p.category === currentCategory);
+
       filtered.forEach(prod => {
         const card = document.createElement('div');
         card.classList.add('product-card');
@@ -417,6 +506,7 @@
       const cartEl = document.getElementById('cart-items');
       const totalEl = document.getElementById('total');
       const checkoutBtn = document.getElementById('checkout-btn');
+
       if (items.length === 0) {
         cartEl.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
         totalEl.textContent = '0';
@@ -450,8 +540,8 @@
         }, (value) => {
           if (!value) return;
           tg.CloudStorage.setItem('lastDelivery', value);
-          const total = itemsTotal();
-          const order = { action: 'order', total, cart: Object.values(cart), user: tg.initDataUnsafe.user, delivery: value };
+          const total = Object.values(cart).reduce((sum, i) => sum + i.price * i.qty, 0);
+          const order = { total, cart: Object.values(cart), user: tg.initDataUnsafe.user, delivery: value };
           saveOrder(order);
           sendOrderToBot(order);
           cart = {};
@@ -459,10 +549,6 @@
           tg.showAlert('✅ Спасибо за заказ! Мы свяжемся с вами.');
         });
       });
-    }
-
-    function itemsTotal() {
-      return Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
     }
 
     function saveOrder(order) {
@@ -501,7 +587,7 @@
     MainButton.onClick(() => { checkout(); });
 
     tg.onEvent('settingsButtonClicked', () => {
-      tg.showConfirm("Открыть админку?", ok => { if (ok) window.location.href = "admin.html"; });
+      tg.showConfirm("Открыть админку?", ok => ok && (window.location.href = "admin.html"));
     });
 
     tg.ready();

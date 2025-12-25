@@ -51,7 +51,6 @@
       min-height: calc(100vh - 140px);
     }
 
-    /* Уведомление о скидке */
     .sale-banner {
       background: linear-gradient(90deg, #f97316, #fb923c);
       color: white;
@@ -70,7 +69,6 @@
       100% { opacity: 1; }
     }
 
-    /* Заголовок */
     .header {
       display: flex;
       justify-content: space-between;
@@ -89,7 +87,6 @@
       gap: 8px;
     }
 
-    /* Переключатель темы */
     .theme-switch {
       display: flex;
       align-items: center;
@@ -116,7 +113,6 @@
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(26px); }
 
-    /* Поиск */
     .search {
       margin: 16px 0;
     }
@@ -137,7 +133,6 @@
       box-shadow: 0 0 0 2px rgba(88, 80, 236, 0.2);
     }
 
-    /* Выпадающий каталог */
     .dropdown {
       margin: 16px 0;
       position: relative;
@@ -188,7 +183,6 @@
       background: rgba(96, 165, 250, 0.1);
     }
 
-    /* Товары */
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -296,7 +290,6 @@
       transform: translateY(-2px);
     }
 
-    /* Кнопка отзыва */
     .review-btn {
       background: #f3f4f6;
       border: 1px solid var(--border);
@@ -308,7 +301,6 @@
       margin-bottom: 8px;
     }
 
-    /* Список отзывов */
     .reviews-list {
       font-size: 0.85rem;
       color: var(--text-secondary);
@@ -325,7 +317,6 @@
       color: var(--text);
     }
 
-    /* Корзина */
     .cart {
       background: var(--card-bg);
       padding: 16px;
@@ -397,7 +388,6 @@
       color: white;
     }
 
-    /* Профиль */
     .profile {
       text-align: center;
       padding: 20px 16px;
@@ -431,7 +421,6 @@
       max-width: 300px;
     }
 
-    /* Подвал (Табы) */
     .tabs {
       position: fixed;
       bottom: 0;
@@ -468,7 +457,6 @@
       font-size: 1.2em;
     }
 
-    /* Скрытие контента */
     #catalog-content, #cart-content, #profile-content {
       display: none;
     }
@@ -529,9 +517,7 @@
         <img src="https://ui-avatars.com/api/?name=Пользователь&background=5850ec&color=fff" alt="Аватар">
         <h3>Добро пожаловать!</h3>
         <p>Ваш ID: <span id="user-id"></span></p>
-        <button onclick="showOrderHistory()">
-          📦 История заказов
-        </button>
+        <button onclick="showOrderHistory()">📦 История заказов</button>
         <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-secondary);">
           💡 Все данные хранятся в Telegram
         </p>
@@ -553,6 +539,7 @@
       <span>Профиль</span>
     </button>
   </div>
+
   <script>
     const tg = window.Telegram?.WebApp;
     if (!tg) {
@@ -566,102 +553,21 @@
     const searchInput = document.getElementById('search-input');
     const dropdownBtn = document.getElementById('dropdown-btn');
     const dropdownMenu = document.getElementById('dropdown-menu');
-    const tabs = document.querySelectorAll('.tab');
-    const catalogContent = document.getElementById('catalog-content');
-    const cartContent = document.getElementById('cart-content');
-    const profileContent = document.getElementById('profile-content');
-
     let currentCategory = 'all';
     let cart = {};
     let tempUserRating = 5;
 
-    // Инициализация продуктов
     let products = [
-      { 
-        id: 'laptop', 
-        name: 'Ноутбук X200', 
-        price: 99, 
-        img: 'https://picsum.photos/seed/laptop/300/200', 
-        desc: 'Мощный, лёгкий, для работы и игр', 
-        category: 'laptops', 
-        rating: 4.7, 
-        reviews: [
-          { user: 'Алексей', text: 'Отличный ноутбук, работает быстро!', rating: 5, date: '10.05.2025', userId: 111111111 }
-        ] 
-      },
-      { 
-        id: 'macbook', 
-        name: 'MacBook Air M2', 
-        price: 129, 
-        img: 'https://picsum.photos/seed/macbook/300/200', 
-        desc: 'Тонкий, быстрый, с отличным экраном', 
-        category: 'laptops', 
-        rating: 4.9, 
-        reviews: [] 
-      },
-      { 
-        id: 'phone', 
-        name: 'Смартфон Z10', 
-        price: 59, 
-        img: 'https://picsum.photos/seed/phone/300/200', 
-        desc: '6.7", 128 ГБ, камера 108 МП', 
-        category: 'phones', 
-        rating: 4.3, 
-        reviews: [] 
-      },
-      { 
-        id: 'iphone', 
-        name: 'iPhone 15', 
-        price: 149, 
-        img: 'https://picsum.photos/seed/iphone/300/200', 
-        desc: 'Новейший iPhone с премиум-камерой', 
-        category: 'phones', 
-        rating: 4.8, 
-        reviews: [] 
-      },
-      { 
-        id: 'headphones', 
-        name: 'Наушники ProX', 
-        price: 12, 
-        img: 'https://picsum.photos/seed/headphones/300/200', 
-        desc: 'Шумоподавление, 30 ч работы', 
-        category: 'audio', 
-        rating: 4.5, 
-        reviews: [] 
-      },
-      { 
-        id: 'earbuds', 
-        name: 'AirBuds Pro', 
-        price: 18, 
-        img: 'https://picsum.photos/seed/airbuds/300/200', 
-        desc: 'Беспроводные, с кейсом и зарядкой', 
-        category: 'audio', 
-        rating: 4.6, 
-        reviews: [] 
-      },
-      { 
-        id: 'charger', 
-        name: 'Зарядка 65W', 
-        price: 8, 
-        img: 'https://picsum.photos/seed/charger/300/200', 
-        desc: 'Быстрая зарядка для всех устройств', 
-        category: 'accessories', 
-        rating: 4.4, 
-        reviews: [] 
-      },
-      { 
-        id: 'case', 
-        name: 'Чехол защитный', 
-        price: 5, 
-        img: 'https://picsum.photos/seed/case/300/200', 
-        desc: 'Ударопрочный, с магнитом', 
-        category: 'accessories', 
-        rating: 4.1, 
-        reviews: [] 
-      }
+      { id: 'laptop', name: 'Ноутбук X200', price: 99, img: 'https://picsum.photos/seed/laptop/300/200', desc: 'Мощный, лёгкий, для работы и игр', category: 'laptops', rating: 4.7, reviews: [] },
+      { id: 'macbook', name: 'MacBook Air M2', price: 129, img: 'https://picsum.photos/seed/macbook/300/200', desc: 'Тонкий, быстрый, с отличным экраном', category: 'laptops', rating: 4.9, reviews: [] },
+      { id: 'phone', name: 'Смартфон Z10', price: 59, img: 'https://picsum.photos/seed/phone/300/200', desc: '6.7", 128 ГБ, камера 108 МП', category: 'phones', rating: 4.3, reviews: [] },
+      { id: 'iphone', name: 'iPhone 15', price: 149, img: 'https://picsum.photos/seed/iphone/300/200', desc: 'Новейший iPhone с премиум-камерой', category: 'phones', rating: 4.8, reviews: [] },
+      { id: 'headphones', name: 'Наушники ProX', price: 12, img: 'https://picsum.photos/seed/headphones/300/200', desc: 'Шумоподавление, 30 ч работы', category: 'audio', rating: 4.5, reviews: [] },
+      { id: 'earbuds', name: 'AirBuds Pro', price: 18, img: 'https://picsum.photos/seed/airbuds/300/200', desc: 'Беспроводные, с кейсом и зарядкой', category: 'audio', rating: 4.6, reviews: [] },
+      { id: 'charger', name: 'Зарядка 65W', price: 8, img: 'https://picsum.photos/seed/charger/300/200', desc: 'Быстрая зарядка для всех устройств', category: 'accessories', rating: 4.4, reviews: [] },
+      { id: 'case', name: 'Чехол защитный', price: 5, img: 'https://picsum.photos/seed/case/300/200', desc: 'Ударопрочный, с магнитом', category: 'accessories', rating: 4.1, reviews: [] }
     ];
 
-    // Загрузка сохранённых продуктов
     tg.CloudStorage.getItem('productsData', (err, data) => {
       if (data) {
         const saved = JSON.parse(data);
@@ -673,12 +579,10 @@
       renderProducts();
     });
 
-    // Сохранение продуктов
     function saveProducts() {
       tg.CloudStorage.setItem('productsData', JSON.stringify(products));
     }
 
-    // Тема
     if (tg.colorScheme === 'dark') document.body.classList.add('dark');
     themeBtn.checked = document.body.classList.contains('dark');
     themeBtn.addEventListener('change', () => {
@@ -695,8 +599,8 @@
       if (tg.colorScheme === 'dark') document.body.classList.add('dark');
       else document.body.classList.remove('dark');
     });
-    // Рейтинг
-    function renderStars(rating, interactive = false, callback = null, id = '') {
+
+    function renderStars(rating, interactive = false, id = '') {
       const stars = [];
       for (let i = 1; i <= 5; i++) {
         const starClass = i <= rating ? 'fas fa-star' : 'far fa-star';
@@ -713,25 +617,16 @@
       if (el) el.innerText = star;
     }
 
-    // Поиск
     searchInput.addEventListener('input', renderProducts);
 
-    // Фильтрация и отрисовка
     function renderProducts() {
       const query = searchInput.value.toLowerCase();
       const container = document.getElementById('products');
       container.innerHTML = '';
 
       let filtered = products;
-      if (currentCategory !== 'all') {
-        filtered = filtered.filter(p => p.category === currentCategory);
-      }
-      if (query) {
-        filtered = filtered.filter(p => 
-          p.name.toLowerCase().includes(query) || 
-          p.desc.toLowerCase().includes(query)
-        );
-      }
+      if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+      if (query) filtered = filtered.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
 
       const user = tg.initDataUnsafe.user;
 
@@ -765,32 +660,29 @@
       });
     }
 
-    // Показать форму отзыва
     function showReviewModal(productId) {
       const product = products.find(p => p.id === productId);
       const user = tg.initDataUnsafe.user;
       const hasReviewed = product.reviews.some(r => r.userId === user.id);
 
       if (hasReviewed) {
-        tg.showAlert('⚠️ Вы уже оставили отзыв на этот товар');
+        tg.showAlert('⚠️ Вы уже оценили этот товар');
         return;
       }
 
       tempUserRating = 5;
       const textArea = document.createElement('textarea');
-      textArea.placeholder = 'Напишите ваш отзыв (до 500 символов)...';
+      textArea.placeholder = 'Напишите ваш отзыв...';
       textArea.maxLength = 500;
-      textArea.style = 'width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; font-size: 0.9rem; resize: vertical; height: 80px;';
+      textArea.style = 'width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; resize:vertical; height:80px; font-size:0.9rem;';
 
       const starsHtml = `
-        <div style="margin: 8px 0;">
-          ${renderStars(tempUserRating, true, 'setTempRating', productId)}
-        </div>
-        <div>Оценка: <b id="temp-rating-display-${productId}">5</b> из 5</div>
+        <div style="margin:8px 0;">${renderStars(tempUserRating, true, productId)}</div>
+        <div>Оценка: <b id="temp-rating-display-${productId}">5</b></div>
       `;
 
       tg.showPopup({
-        title: \`Оцените "\${product.name}"\`,
+        title: `Оценить: ${product.name}`,
         message: starsHtml + textArea.outerHTML,
         buttons: [
           { type: 'cancel', text: 'Отмена' },
@@ -815,6 +707,7 @@
         }
       });
     }
+
     window.addToCart = function(id) {
       const prod = products.find(p => p.id === id);
       if (!prod) return;
@@ -848,7 +741,7 @@
         });
         totalEl.textContent = total;
         checkoutBtn.disabled = false;
-        MainButton.setText(\`Оплатить \${total} ⭐\`).show();
+        MainButton.setText(`Оплатить ${total} ⭐`).show();
       }
       tg.CloudStorage.setItem('cart', JSON.stringify(cart));
     }
@@ -866,9 +759,9 @@
     function checkout() {
       tg.CloudStorage.getItem('lastDelivery', (e, saved) => {
         tg.showInputDialog({
-          title: "Оформление заказа",
-          message: "Введите имя и адрес доставки:",
-          inputPlaceholder: "Иван Иванов, ул. Ленина, 15",
+          title: "Адрес доставки",
+          message: "Введите имя и адрес:",
+          inputPlaceholder: "Иван, ул. Ленина, 15",
           input: saved || "",
           buttonText: "Оплатить"
         }, (value) => {
@@ -880,7 +773,7 @@
           sendOrderToBot(order);
           cart = {};
           updateCart();
-          tg.showAlert('✅ Спасибо за заказ!');
+          tg.showAlert('✅ Заказ оформлен!');
         });
       });
     }
@@ -894,53 +787,57 @@
     }
 
     function sendOrderToBot(order) {
-      const msg = \`📦 Новый заказ!\n\n\` +
-        \`Пользователь: \${order.user.first_name} (ID: \${order.user.id})\n\` +
-        \`Товары: \${order.cart.map(i => \`\${i.name} × \${i.qty}\`).join('\\n  ')}\n\` +
-        \`Итого: \${order.total} ⭐\n\` +
-        \`Доставка: \${order.delivery}\`;
-      tg.sendData(JSON.stringify({ action: 'new_order_notification', message: msg }));
+      const msg = `📦 Новый заказ!\n\n` +
+        `Пользователь: ${order.user.first_name} (ID: ${order.user.id})\n` +
+        `Товары: ${order.cart.map(i => `${i.name} × ${i.qty}`).join('\n  ')}\n` +
+        `Итого: ${order.total} ⭐\n` +
+        `Доставка: ${order.delivery}`;
+      tg.sendData(JSON.stringify({ action: 'order', text: msg }));
     }
 
     function showOrderHistory() {
       tg.CloudStorage.getItem('orders', (e, data) => {
         const orders = data ? JSON.parse(data) : [];
-        if (orders.length === 0) {
-          tg.showAlert("📦 У вас пока нет заказов");
-          return;
-        }
-        let html = '<h3>Ваши заказы:</h3><hr>';
+        if (!orders.length) return tg.showAlert("📦 У вас нет заказов");
+        let html = '<h3>История заказов</h3><hr>';
         orders.forEach(o => {
-          const items = o.cart.map(i => \`\${i.name} × \${i.qty}\`).join(', ');
-          html += \`<p><b>\${o.total} ⭐</b> — \${items}<br><small>\${o.date}</small></p><hr>\`;
+          const items = o.cart.map(i => `${i.name} × ${i.qty}`).join(', ');
+          html += `<p><b>${o.total} ⭐</b> — ${items}<br><small>${o.date}</small></p><hr>`;
         });
-        tg.showPopup({ title: "📦 История заказов", message: html, buttons: [{ type: "close" }] });
+        tg.showPopup({ title: "📦", message: html, buttons: [{ type: "close" }] });
       });
     }
 
-    // Управление вкладками
-    function showTab(tabName) {
-      catalogContent.style.display = 'none';
-      cartContent.style.display = 'none';
-      profileContent.style.display = 'none';
-      tabs.forEach(t => t.classList.remove('active'));
-      document.querySelector(\`[data-tab="\${tabName}"]\`).classList.add('active');
-      if (tabName === 'catalog') catalogContent.style.display = 'block';
-      else if (tabName === 'cart') cartContent.style.display = 'block';
-      else if (tabName === 'profile') {
-        profileContent.style.display = 'block';
-        document.getElementById('user-id').textContent = tg.initDataUnsafe.user.first_name || '---';
+    function initTabs() {
+      const tabs = document.querySelectorAll('.tab');
+      const catalogContent = document.getElementById('catalog-content');
+      const cartContent = document.getElementById('cart-content');
+      const profileContent = document.getElementById('profile-content');
+
+      function showTab(tabName) {
+        catalogContent.style.display = 'none';
+        cartContent.style.display = 'none';
+        profileContent.style.display = 'none';
+        tabs.forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+        if (tabName === 'catalog') catalogContent.style.display = 'block';
+        else if (tabName === 'cart') cartContent.style.display = 'block';
+        else if (tabName === 'profile') {
+          profileContent.style.display = 'block';
+          document.getElementById('user-id').textContent = tg.initDataUnsafe.user?.first_name || '---';
+        }
       }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabName = tab.dataset.tab;
+          showTab(tabName);
+        });
+      });
+
+      showTab('catalog');
     }
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const tabName = tab.dataset.tab;
-        showTab(tabName);
-      });
-    });
-
-    // Категории
     dropdownBtn.addEventListener('click', () => {
       const isOpen = dropdownMenu.style.display === 'block';
       document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
@@ -962,31 +859,20 @@
       });
     });
 
-    // Инициализация
     tg.ready(() => {
-      showTab('catalog');
+      initTabs();
       tg.CloudStorage.getItem('cart', (e, v) => {
         if (v) cart = JSON.parse(v);
         updateCart();
       });
-
-      // Уведомление о скидке (один раз)
-      tg.CloudStorage.getItem('saleShown', (err, value) => {
-        if (!value) {
-          tg.showAlert("🎉 Скидка до -30% на наушники! Только сегодня!", () => {
-            tg.CloudStorage.setItem('saleShown', '1');
-          });
+      tg.CloudStorage.getItem('saleShown', (e, v) => {
+        if (!v) {
+          tg.showAlert("🎉 Скидка на наушники!", () => tg.CloudStorage.setItem('saleShown', '1'));
         }
       });
     });
 
-    // Главная кнопка
-    MainButton.onClick(() => { checkout(); });
-
-    // Настройки
-    tg.onEvent('settingsButtonClicked', () => {
-      tg.showConfirm("Открыть админку?", ok => ok && (window.location.href = "admin.html"));
-    });
+    MainButton.onClick(() => checkout());
   </script>
 </body>
 </html>

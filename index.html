@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TechShop — С отзывами</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -569,11 +570,15 @@
 
     tg.CloudStorage.getItem('productsData', (err, data) => {
       if (data) {
-        const saved = JSON.parse(data);
-        products = products.map(p => {
-          const savedP = saved.find(sp => sp.id === p.id);
-          return savedP ? savedP : p;
-        });
+        try {
+          const saved = JSON.parse(data);
+          products = products.map(p => {
+            const savedP = saved.find(sp => sp.id === p.id);
+            return savedP ? savedP : p;
+          });
+        } catch (e) {
+          console.error("Ошибка загрузки продуктов:", e);
+        }
       }
       renderProducts();
     });
@@ -616,11 +621,12 @@
       if (el) el.innerText = star;
     }
 
-    searchInput.addEventListener('input', renderProducts);
+    searchInput?.addEventListener('input', renderProducts);
 
     function renderProducts() {
-      const query = searchInput.value.toLowerCase();
+      const query = searchInput?.value.toLowerCase() || '';
       const container = document.getElementById('products');
+      if (!container) return;
       container.innerHTML = '';
 
       let filtered = products;
@@ -630,7 +636,7 @@
       const user = tg.initDataUnsafe.user;
 
       filtered.forEach(prod => {
-        const hasReviewed = prod.reviews.some(r => r.userId === user.id);
+        const hasReviewed = prod.reviews.some(r => r.userId === user?.id);
         const reviewsShort = prod.reviews.slice(0, 2).map(r => `
           <div class="review-item">
             <b>${r.user}</b> ⭐${r.rating} <i>(${r.date})</i><br>
@@ -813,6 +819,11 @@
       const cartContent = document.getElementById('cart-content');
       const profileContent = document.getElementById('profile-content');
 
+      if (!tabs.length || !catalogContent) {
+        console.error("Элементы вкладок не найдены");
+        return;
+      }
+
       function showTab(tabName) {
         catalogContent.style.display = 'none';
         cartContent.style.display = 'none';
@@ -829,22 +840,21 @@
 
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-          const tabName = tab.dataset.tab;
-          showTab(tabName);
+          showTab(tab.dataset.tab);
         });
       });
 
       showTab('catalog');
     }
 
-    dropdownBtn.addEventListener('click', () => {
+    dropdownBtn?.addEventListener('click', () => {
       const isOpen = dropdownMenu.style.display === 'block';
       document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
       dropdownMenu.style.display = isOpen ? 'none' : 'block';
     });
 
     document.addEventListener('click', (e) => {
-      if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      if (!dropdownBtn?.contains(e.target) && !dropdownMenu?.contains(e.target)) {
         dropdownMenu.style.display = 'none';
       }
     });
@@ -860,19 +870,29 @@
 
     tg.ready(() => {
       initTabs();
+      renderProducts();
+
       tg.CloudStorage.getItem('cart', (e, v) => {
-        if (v) cart = JSON.parse(v);
+        if (v) {
+          try {
+            cart = JSON.parse(v);
+          } catch (e) {
+            console.error("Ошибка загрузки корзины:", e);
+          }
+        }
         updateCart();
       });
+
       tg.CloudStorage.getItem('saleShown', (e, v) => {
         if (!v) {
-          tg.showAlert("🎉 Скидка на наушники!", () => tg.CloudStorage.setItem('saleShown', '1'));
+          tg.showAlert("🎉 Скидка на наушники!", () => {
+            tg.CloudStorage.setItem('saleShown', '1');
+          });
         }
       });
     });
 
     MainButton.onClick(() => checkout());
   </script>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>

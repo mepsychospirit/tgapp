@@ -553,7 +553,6 @@
       <span>Профиль</span>
     </button>
   </div>
-
   <script>
     const tg = window.Telegram?.WebApp;
     if (!tg) {
@@ -696,7 +695,6 @@
       if (tg.colorScheme === 'dark') document.body.classList.add('dark');
       else document.body.classList.remove('dark');
     });
-
     // Рейтинг
     function renderStars(rating, interactive = false, callback = null, id = '') {
       const stars = [];
@@ -792,7 +790,7 @@
       `;
 
       tg.showPopup({
-        title: `Оцените "${product.name}"`,
+        title: \`Оцените "\${product.name}"\`,
         message: starsHtml + textArea.outerHTML,
         buttons: [
           { type: 'cancel', text: 'Отмена' },
@@ -817,7 +815,6 @@
         }
       });
     }
-
     window.addToCart = function(id) {
       const prod = products.find(p => p.id === id);
       if (!prod) return;
@@ -851,7 +848,7 @@
         });
         totalEl.textContent = total;
         checkoutBtn.disabled = false;
-        MainButton.setText(`Оплатить ${total} ⭐`).show();
+        MainButton.setText(\`Оплатить \${total} ⭐\`).show();
       }
       tg.CloudStorage.setItem('cart', JSON.stringify(cart));
     }
@@ -897,11 +894,11 @@
     }
 
     function sendOrderToBot(order) {
-      const msg = `📦 Новый заказ!\n\n` +
-        `Пользователь: ${order.user.first_name} (ID: ${order.user.id})\n` +
-        `Товары: ${order.cart.map(i => `${i.name} × ${i.qty}`).join('\n  ')}\n` +
-        `Итого: ${order.total} ⭐\n` +
-        `Доставка: ${order.delivery}`;
+      const msg = \`📦 Новый заказ!\n\n\` +
+        \`Пользователь: \${order.user.first_name} (ID: \${order.user.id})\n\` +
+        \`Товары: \${order.cart.map(i => \`\${i.name} × \${i.qty}\`).join('\\n  ')}\n\` +
+        \`Итого: \${order.total} ⭐\n\` +
+        \`Доставка: \${order.delivery}\`;
       tg.sendData(JSON.stringify({ action: 'new_order_notification', message: msg }));
     }
 
@@ -914,8 +911,8 @@
         }
         let html = '<h3>Ваши заказы:</h3><hr>';
         orders.forEach(o => {
-          const items = o.cart.map(i => `${i.name} × ${i.qty}`).join(', ');
-          html += `<p><b>${o.total} ⭐</b> — ${items}<br><small>${o.date}</small></p><hr>`;
+          const items = o.cart.map(i => \`\${i.name} × \${i.qty}\`).join(', ');
+          html += \`<p><b>\${o.total} ⭐</b> — \${items}<br><small>\${o.date}</small></p><hr>\`;
         });
         tg.showPopup({ title: "📦 История заказов", message: html, buttons: [{ type: "close" }] });
       });
@@ -927,12 +924,12 @@
       cartContent.style.display = 'none';
       profileContent.style.display = 'none';
       tabs.forEach(t => t.classList.remove('active'));
-      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+      document.querySelector(\`[data-tab="\${tabName}"]\`).classList.add('active');
       if (tabName === 'catalog') catalogContent.style.display = 'block';
       else if (tabName === 'cart') cartContent.style.display = 'block';
       else if (tabName === 'profile') {
         profileContent.style.display = 'block';
-        document.getElementById('user-id').textContent = user.first_name || '---';
+        document.getElementById('user-id').textContent = tg.initDataUnsafe.user.first_name || '---';
       }
     }
 
@@ -988,4 +985,8 @@
 
     // Настройки
     tg.onEvent('settingsButtonClicked', () => {
-      tg.showConfirm("Открыть админку?", ok => ok && (window.location
+      tg.showConfirm("Открыть админку?", ok => ok && (window.location.href = "admin.html"));
+    });
+  </script>
+</body>
+</html>
